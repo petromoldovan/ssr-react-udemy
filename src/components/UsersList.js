@@ -6,10 +6,9 @@ const mapStateToProps = (state) => {
 	return {users: state.users}
 }
 
-
 class UsersList extends React.PureComponent {
 	componentDidMount() {
-		this.props.fetchUsers()
+		//this.props.fetchUsers()
 	}
 
 	renderUsers() {
@@ -30,4 +29,11 @@ class UsersList extends React.PureComponent {
 	}
 }
 
-export default connect(mapStateToProps, {fetchUsers})(UsersList)
+//this is loaded on server.
+//the store argument is the store instance from server
+function loadData(store) {
+	return store.dispatch(fetchUsers())
+}
+
+export { loadData }
+export default connect(mapStateToProps)(UsersList)
