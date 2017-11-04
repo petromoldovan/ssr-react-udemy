@@ -1,15 +1,4 @@
-const path = require('path')
-
 module.exports = {
-	//root file of the app
-	entry: './src/client/client.js',
-
-	//output for the bundle.js
-	output: {
-		filename: 'client-bundle.js',
-		path: path.resolve(__dirname, 'public')
-	},
-
 	//run webpack with babel
 	module: {
 		rules: [
