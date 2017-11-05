@@ -8,3 +8,14 @@ export const fetchUsers = () => async (dispatch, getState, axiosInstance) => {
 	})
 
 }
+
+export const FETCH_CURRENT_USERS = 'FETCH_CURRENT_USERS'
+export const fetchCurrentUser = () => async (dispatch, getState, axiosInstance) => {
+	const res = await axiosInstance.get('/current_user')
+
+	dispatch({
+		type: FETCH_CURRENT_USERS,
+		payload: res
+	})
+
+}
