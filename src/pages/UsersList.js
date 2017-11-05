@@ -8,7 +8,7 @@ const mapStateToProps = (state) => {
 
 class UsersList extends React.PureComponent {
 	componentDidMount() {
-		//this.props.fetchUsers()
+		if (this.props.users.length === 0) this.props.fetchUsers()
 	}
 
 	renderUsers() {
@@ -35,5 +35,7 @@ function loadData(store) {
 	return store.dispatch(fetchUsers())
 }
 
-export { loadData }
-export default connect(mapStateToProps)(UsersList)
+export default {
+	loadData,
+	component: connect(mapStateToProps)(UsersList)
+}
