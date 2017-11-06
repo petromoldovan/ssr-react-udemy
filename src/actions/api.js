@@ -6,7 +6,6 @@ export const fetchUsers = () => async (dispatch, getState, axiosInstance) => {
 		type: FETCH_USERS,
 		payload: res
 	})
-
 }
 
 export const FETCH_CURRENT_USERS = 'FETCH_CURRENT_USERS'
@@ -17,5 +16,14 @@ export const fetchCurrentUser = () => async (dispatch, getState, axiosInstance) 
 		type: FETCH_CURRENT_USERS,
 		payload: res
 	})
+}
 
+export const FETCH_ADMINS = 'FETCH_ADMINS'
+export const fetchAdmins = () => async (dispatch, getState, axiosInstance) => {
+	const res = await axiosInstance.get('/admins')
+
+	dispatch({
+		type: FETCH_ADMINS,
+		payload: res
+	})
 }

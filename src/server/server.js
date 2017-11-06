@@ -28,14 +28,42 @@ app.get('*', (req, res) => {
 	const store = createStore(req);
 
 	//match incoming path with existing routes
-	const promisses = matchRoutes(routes, req.path).map(({route}) => {
-		//loadData for certain route. We have to define this function in each component if we want any data to be loaded.
-		return route.loadData ? route.loadData(store) : null
-	})
+	const promisses = matchRoutes(routes, req.path)
+		.map(({route}) => {
+			//loadData for certain route. We have to define this function in each component if we want any data to be loaded.
+			return route.loadData ? route.loadData(store) : null
+		})
+		.map(promise => {
+			if (promise) {
+				return new Promise((resolve, reject) => {
+					//here we wrap all promisses from previos map func into another Promise and ALWAYS resolve them!
+					//this is done because Promise.all below fails on the first rejected promise and does not call 'then' func but 'catch' func. But we want Promise.all to attempt to wait for all request.
+					// That is why we artificiall say that all these Promise wrappers will be always resolved to let Promise.all finish.
+					promise.then(resolve).catch(resolve)
+				})
+			}
+		})
 
-	Promise.all(promisses).then(() => {
-		res.send(renderer(req, store))
-	})
+	Promise.all(promisses)
+		.then(() => {
+			//context works only with static router and is used to communicate info from components to their parent components or in our case here with server.js
+			const context = {}
+
+			const content = renderer(req, store, context)
+
+			//context gets url only when StaticRouter(the server router) sees <Redirect /> in one of the components(like we have in requireAuth hoc). Static router cannot really redirect user. But the
+			// url property is assigned to context. We need to check of that url prop on context and redirect user to this url if it is set.
+			if (context.url) {
+				return res.redirect(301, context.url)
+			}
+
+			//here we set error status on response. Context.notFound was set in Error404.js and passed automagically to service.js
+			if (context.notFound) {
+				res.status(404)
+			}
+
+			res.send(content)
+		})
 })
 
 app.listen(PORT,() => {
