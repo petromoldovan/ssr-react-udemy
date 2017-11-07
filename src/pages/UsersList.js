@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {Helmet} from 'react-helmet'
 import {fetchUsers} from '../actions/api'
 
 const mapStateToProps = (state) => {
@@ -17,9 +18,19 @@ class UsersList extends React.PureComponent {
 		})
 	}
 
+	head() {
+		return (
+			<Helmet>
+				<title>{`(${this.props.users.length}) Users Loaded`}</title>
+				<meta property="og:title" content="Users page" />
+			</Helmet>
+		)
+	}
+
 	render() {
 		return (
 			<div>
+				{this.head()}
 				List of users
 				<ol>
 					{this.renderUsers()}

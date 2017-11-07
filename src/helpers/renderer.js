@@ -9,6 +9,8 @@ import serialize from 'serialize-javascript'
 import {StaticRouter} from 'react-router-dom'
 import routes from '../routes/routes'
 
+import {Helmet} from 'react-helmet'
+
 export default (req, store, context) => {
 	const content = renderToString(
 		<Provider store={store}>
@@ -20,9 +22,14 @@ export default (req, store, context) => {
 		</Provider>
 	)
 
+	//pull all tags from react components
+	const helmet = Helmet.renderStatic()
+
 	return `
 		<html>
 			<head>
+			${helmet.title.toString()}
+			${helmet.meta.toString()}
 			</head>
 			<body>
 			<div id="root">${content}</div>
